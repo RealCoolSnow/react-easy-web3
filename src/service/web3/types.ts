@@ -1,5 +1,4 @@
 export interface IWalletInfo {
-  signer: any
   address: string
   chainId: number
   network: object

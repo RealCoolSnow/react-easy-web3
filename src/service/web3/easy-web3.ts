@@ -17,7 +17,6 @@ import {
 const TAG = 'EasyWeb3'
 
 const DEFAULT_WALLET_INFO: IWalletInfo = {
-  signer: '',
   address: '',
   chainId: 1,
   network: {},
@@ -33,7 +32,7 @@ const WEB3_MESSAGE = 'web3-message'
 class EasyWeb3 {
   private static instance: EasyWeb3
   private web3Modal: Web3Modal
-  private web3Provider: any //Web3Provider
+  private web3Provider: ethers.providers.Web3Provider
   private walletInfo: IWalletInfo = DEFAULT_WALLET_INFO
   private chainId = 1
   private connectState: ConnectState = ConnectState.Disconnected
@@ -187,8 +186,8 @@ class EasyWeb3 {
    * @returns ETH balance
    */
   public async getBalance() {
-    if (this.walletInfo.signer) {
-      const balance = await this.walletInfo.signer.getBalance()
+    if (this.web3Provider && this.web3Provider.getSigner()) {
+      const balance = await this.web3Provider.getSigner().getBalance()
       return ethers.utils.formatEther(balance)
     } else {
       throw new Error(Web3Error.WalletNotConnected)
@@ -233,13 +232,13 @@ class EasyWeb3 {
    *
    */
   public getSigner() {
-    if (this.isConnected()) return this.walletInfo.signer
-    return false
+    if (this.isConnected()) return this.web3Provider.getSigner()
+    return null
   }
 
   /**
    * get current provider
-   * @returns 
+   * @returns
    */
   public getProvider() {
     return this.web3Provider
@@ -253,7 +252,6 @@ class EasyWeb3 {
    */
   private async updateWalletInfo() {
     const signer = this.web3Provider.getSigner()
-    this.walletInfo.signer = signer
     this.walletInfo.address = await signer.getAddress()
     this.walletInfo.chainId = await signer.getChainId()
     this.walletInfo.network = await this.web3Provider.getNetwork()

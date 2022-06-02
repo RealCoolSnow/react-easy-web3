@@ -63,6 +63,7 @@ export const DAI_CONTRACT: { [chainId: number]: ContractSetup } = {
         stateMutability: 'nonpayable',
         type: 'function',
       },
+      "event Transfer(address indexed src, address indexed dst, uint val)"
     ],
   },
 }
