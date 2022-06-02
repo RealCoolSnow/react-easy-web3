@@ -27,7 +27,7 @@ const DEFAULT_WALLET_INFO: IWalletInfo = {
 const WEB3_MESSAGE = 'web3-message'
 
 /**
- * 
+ *
  *
  */
 class EasyWeb3 {
@@ -235,6 +235,14 @@ class EasyWeb3 {
   public getSigner() {
     if (this.isConnected()) return this.walletInfo.signer
     return false
+  }
+
+  /**
+   * get current provider
+   * @returns 
+   */
+  public getProvider() {
+    return this.web3Provider
   }
 
   public isConnected() {
