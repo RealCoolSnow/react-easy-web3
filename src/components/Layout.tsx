@@ -2,8 +2,6 @@ import i18n from '@/locale'
 import { Dispatch, RootState } from '@/store'
 import InfoIcon from '@mui/icons-material/Info'
 import MenuIcon from '@mui/icons-material/Menu'
-import SendIcon from '@mui/icons-material/Send'
-import AlternateEmailIcon from '@mui/icons-material/AlternateEmail'
 import HomeIcon from '@mui/icons-material/Home'
 import {
   MenuItem,
@@ -109,9 +107,7 @@ const Header = () => {
               <ListItemButton>
                 <ListItemIcon>
                   {index == 0 ? <HomeIcon /> : <span></span>}
-                  {index == 1 ? <SendIcon /> : <span></span>}
-                  {index == 2 ? <AlternateEmailIcon /> : <span></span>}
-                  {index == 3 ? <InfoIcon /> : <span></span>}
+                  {index == 1 ? <InfoIcon /> : <span></span>}
                 </ListItemIcon>
                 <ListItemText primary={item.title} />
               </ListItemButton>

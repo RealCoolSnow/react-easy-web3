@@ -85,7 +85,7 @@ const Index = () => {
   return (
     <>
       {connectState == ConnectState.Connected && (
-        <ul className="flex flex-col items-center">
+        <ul className="flex flex-col items-center pt-12">
           {list.map((item) => (
             <li
               className="my-2 btn bg-primary text-white px-6 py-2 rounded-full"

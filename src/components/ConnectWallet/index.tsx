@@ -7,6 +7,7 @@ import {
 } from '@/service/web3'
 import { CircularProgress } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import ExitToAppIcon from '@mui/icons-material/ExitToApp'
 
 const ConnectWallet = () => {
   const { t } = useTranslation()
@@ -39,13 +40,16 @@ const ConnectWallet = () => {
         <CircularProgress color="secondary" size="1.2rem" />
       )}
       {connectState == ConnectState.Connected && (
-        <div className="flex flex-col items-center btn" onClick={onDisconnect}>
-          <span className="text-primary">
-            {easyWeb3.getAddressShort(walletInfo.address)}
-          </span>
-          <span className="text-sm">
-            {easyWeb3.getBalanceShort(walletInfo.balance)}&nbsp;ETH
-          </span>
+        <div className="flex items-center">
+          <div className="flex flex-col items-center btn">
+            <span className="text-primary">
+              {easyWeb3.getAddressShort(walletInfo.address)}
+            </span>
+            <span className="text-sm">
+              {easyWeb3.getBalanceShort(walletInfo.balance)}&nbsp;ETH
+            </span>
+          </div>
+          <ExitToAppIcon color="secondary" onClick={onDisconnect} />
         </div>
       )}
     </>

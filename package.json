@@ -1,7 +1,10 @@
 {
   "name": "react-easy-web3",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Web3 frontend template with React & Vite & TypeScript.",
+  "license": "MIT",
+  "author": "CoolSnow(coolsnow2020@gmail.com)",
   "scripts": {
     "build": "tsc && vite build",
     "dev": "vite",
