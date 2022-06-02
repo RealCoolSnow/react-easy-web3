@@ -27,7 +27,7 @@ const DEFAULT_WALLET_INFO: IWalletInfo = {
 const WEB3_MESSAGE = 'web3-message'
 
 /**
- * sample:
+ * 
  *
  */
 class EasyWeb3 {
