@@ -32,7 +32,7 @@ const WEB3_MESSAGE = 'web3-message'
 class EasyWeb3 {
   private static instance: EasyWeb3
   private web3Modal: Web3Modal
-  private web3Provider: ethers.providers.Web3Provider
+  private web3Provider?: ethers.providers.Web3Provider
   private walletInfo: IWalletInfo = DEFAULT_WALLET_INFO
   private chainId = 1
   private connectState: ConnectState = ConnectState.Disconnected
@@ -66,8 +66,18 @@ class EasyWeb3 {
    * connect to wallet
    */
   public connectWallet = async (): Promise<void> => {
+    const connectNotify = async () => {
+      await this.updateWalletInfo()
+      this.connectState = ConnectState.Connected
+      EventBus.getInstance().dispatch<IWeb3Event>(WEB3_MESSAGE, {
+        type: Web3EventType.Provider_Connect,
+      })
+    }
     try {
-      if (this.connectState !== ConnectState.Disconnected) {
+      if (this.connectState == ConnectState.Connected) {
+        connectNotify()
+        return
+      } else if (this.connectState == ConnectState.Connecting) {
         return
       }
       this.connectState = ConnectState.Connecting
@@ -79,11 +89,7 @@ class EasyWeb3 {
         await this.subscribeProvider(instance)
         this.web3Provider = new ethers.providers.Web3Provider(instance, 'any')
       }
-      await this.updateWalletInfo()
-      this.connectState = ConnectState.Connected
-      EventBus.getInstance().dispatch<IWeb3Event>(WEB3_MESSAGE, {
-        type: Web3EventType.Provider_Connect,
-      })
+      connectNotify()
     } catch (error: any) {
       console.log(TAG, 'connectWallet', error)
       this.connectState = ConnectState.Disconnected
@@ -123,7 +129,7 @@ class EasyWeb3 {
           type: Web3EventType.Provider_AccountsChanged,
           data: accounts,
         })
-      },
+      }
     )
     provider.on(Web3EventType.Provider_Connect, async (info: IConnectInfo) => {
       console.log(TAG, Web3EventType.Provider_Connect, info)
@@ -144,7 +150,7 @@ class EasyWeb3 {
           type: Web3EventType.Provider_Disconnect,
           data: error,
         })
-      },
+      }
     )
 
     provider.on(
@@ -156,7 +162,7 @@ class EasyWeb3 {
           type: Web3EventType.Provider_ChainChanged,
           data: chainId,
         })
-      },
+      }
     )
     provider.on(Web3EventType.Provider_Message, (message: IProviderMessage) => {
       console.log(TAG, Web3EventType.Provider_Message, message)
@@ -232,7 +238,7 @@ class EasyWeb3 {
    *
    */
   public getSigner() {
-    if (this.isConnected()) return this.web3Provider.getSigner()
+    if (this.isConnected()) return this.web3Provider!.getSigner()
     return null
   }
 
@@ -251,10 +257,10 @@ class EasyWeb3 {
    * update wallet info
    */
   private async updateWalletInfo() {
-    const signer = this.web3Provider.getSigner()
+    const signer = this.web3Provider!.getSigner()
     this.walletInfo.address = await signer.getAddress()
     this.walletInfo.chainId = await signer.getChainId()
-    this.walletInfo.network = await this.web3Provider.getNetwork()
+    this.walletInfo.network = await this.web3Provider!.getNetwork()
     this.walletInfo.balance = await this.getBalance()
     console.log(TAG, 'updateWalletInfo', this.walletInfo)
   }
@@ -269,7 +275,7 @@ class EasyWeb3 {
         type: Web3EventType.Provider_Disconnect,
         data: 'user disconnect',
       })
-      this.web3Provider = null
+      this.web3Provider = undefined
     }
   }
 }
